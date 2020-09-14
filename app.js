@@ -1,5 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
+//var db = require('./db.js'); // db 불러오기
+var mongoose = require('mongoose');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -8,6 +10,19 @@ var indexRouter = require('./routes/index');
 var adminUserRouter = require('./routes/super/admin_user'); 
 
 var app = express();
+
+
+
+//conncet to mongodb server
+var db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function(){
+  console.log('connected mongodb server!');
+});
+ 
+mongoose.connect('mongodb://paint:1729ckdrl!%40@192.168.0.22:27017/paint');
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,7 +34,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 app.use('/', indexRouter);
 app.use('/api/super', adminUserRouter);
 
