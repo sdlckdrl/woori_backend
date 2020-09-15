@@ -15,18 +15,21 @@ router.post('/login', function (req, res, next) {
                         result_code : 'fail', error:'비밀번호가 틀렸습니다.'
                     })
                 }
-                //res.json({user_id: user.user_id, result_code:'success'});
             })
             user.generateToken((err, info) => {
-                res.json({'token': info.token, result_code:'success'});
+                return res.json({'token': info.token, result_code:'success'});
             })
         });
     }
 });
 router.get('/user/info', function (req, res, next) { 
-    let user_id = req.headers['access-token']
-    User.findOne({user_id: user_id}, (err, user) => {
-        res.json(user);
+    let token = req.headers['access-token']
+    User.findOne({token: token}, {_id:0, user_id:1, user_nm:1}, (err, user) => {
+        if(!user){
+            return res.json({result_code : 'fail', error:'잘못된 AccessToken'});
+        }else{
+            return res.json({result_code: "success", user_id: user.user_id, user_nm: user.user_nm});
+        }
     });
 });
 
