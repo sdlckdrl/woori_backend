@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 module.exports = () => {
-  function connect() {
-    mongoose.connect('mongodb://paint:1729ckdrl!%40@192.168.0.22:27017/paint', { dbName: 'paint', useNewUrlParser: true }, function(err) {
-      if (err) {
-        console.error('mongodb connection error', err);
-      }
-      console.log('mongodb connected');
-    });
+  var db = mongoose.connection;
+  function connect() {    
+    mongoose.connect('mongodb://paint:1729ckdrl!%40@sdlckdrl.iptime.org:27017/paint', { dbName: 'paint', useNewUrlParser: true });
   }
   connect();
-  mongoose.connection.on('disconnected', connect);
-  require('./user.js'); // user.js는 나중에 만듭니다.
+  db.on('error', console.error);
+  db.once('open', function(){
+    console.log('connected mongodb server!');
+  });
+  db.on('disconnected', connect);
 };
