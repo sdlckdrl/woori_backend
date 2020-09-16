@@ -16,6 +16,10 @@ router.get('/super/login', function (req, res, next) {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
+router.get('/super/itemManager', function (req, res, next) {
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
+
 router.get('/images/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });

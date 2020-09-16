@@ -1,6 +1,8 @@
 var express = require('express'); 
 var router = express.Router(); 
 var User = require('../../user.js');
+const jwt = require('jsonwebtoken');
+const SECRETKEY_FOR_JWT = 'secretkey';
 router.post('/login', function (req, res, next) { 
     if(req.body.user_id === null || req.body.user_pw === null){
         res.json({result_code : 'fail', error:'아이디와 비밀번호를 확인하세요.'});
@@ -22,7 +24,7 @@ router.post('/login', function (req, res, next) {
         });
     }
 });
-router.get('/user/info', function (req, res, next) { 
+router.get('/user/info', ensureAuthorized, function (req, res, next) { 
     let token = req.headers['access-token']
     User.findOne({token: token}, {_id:0, user_id:1, user_nm:1}, (err, user) => {
         if(!user){
@@ -36,17 +38,19 @@ router.get('/user/info', function (req, res, next) {
 // 요청 헤더 내의 authorization 헤더에서 토큰 추출
 // 토큰이 존재하면, 토큰을 req.token에 할당
 function ensureAuthorized(req, res, next) {
-    var bearerToken;
-    var bearerHeader = req.headers["authorization"];
-    if (typeof bearerHeader !== 'undefined') {
-        var bearer = bearerHeader.split(" ");
-        bearerToken = bearer[1];
-        req.token = bearerToken;
+    var bearerToken = req.headers['access-token']
+    if (typeof bearerToken !== 'undefined') {
+        jwt.verify(bearerToken, SECRETKEY_FOR_JWT, function(err, decoded){
+            if(err) {
+                res.send(403);
+            }
+        })
         next(); // 다음 콜백함수 진행
     } else {
         res.send(403);
     }
 }
+
 process.on('uncaughtException', function(err) {
     console.log(err);
 });

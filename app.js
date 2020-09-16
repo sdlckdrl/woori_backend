@@ -7,6 +7,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var adminUserRouter = require('./routes/super/admin_user'); 
+var adminItemRouter = require('./routes/super/admin_item'); 
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/', indexRouter);
 app.use('/api/super', adminUserRouter);
+app.use('/api/super/itemManager', adminItemRouter);
 app.use(function(req, res, next) {
   //모든 도메인의 요청을 허용하지 않으면 웹브라우저에서 CORS 에러를 발생시킨다.
   res.setHeader('Access-Control-Allow-Origin', '*');

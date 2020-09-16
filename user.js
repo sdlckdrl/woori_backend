@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const SECRETKEY_FOR_JWT = 'secretkey';
 const saltRounds = 10; //salt 10자리로 비밀번호를 암호화한다.
 const userSchema = new mongoose.Schema({
   token: String,
@@ -16,7 +17,8 @@ userSchema.methods.comparePassword = function(plainPassword, cb){
 }
 userSchema.methods.generateToken = function(cb){
   var user = this
-  var token = jwt.sign(user._id.toHexString(), 'secretToken')
+  var payload = {_id : user._id.toHexString(), user_nm: user.user_nm}
+  var token = jwt.sign(payload, SECRETKEY_FOR_JWT, { expiresIn: '20m'})
   user.token = token
   //console.info(user)
   user.save(function(err, user){
