@@ -15,5 +15,8 @@ const itemSchema = new mongoose.Schema({
   price: Number,
   inventory_quantity: Number
 });
+itemSchema.methods.createObjectId = function(){
+  return mongoose.Types.ObjectId()
+}
 
 module.exports = mongoose.model('Item', itemSchema);

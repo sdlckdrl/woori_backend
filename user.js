@@ -18,7 +18,7 @@ userSchema.methods.comparePassword = function(plainPassword, cb){
 userSchema.methods.generateToken = function(cb){
   var user = this
   var payload = {_id : user._id.toHexString(), user_nm: user.user_nm}
-  var token = jwt.sign(payload, SECRETKEY_FOR_JWT, { expiresIn: '20m'})
+  var token = jwt.sign(payload, SECRETKEY_FOR_JWT, { expiresIn: '60m'})
   user.token = token
   //console.info(user)
   user.save(function(err, user){
